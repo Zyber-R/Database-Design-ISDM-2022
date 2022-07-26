@@ -1,0 +1,383 @@
+CREATE DATABASE MOTTsystemFinale ;
+USE MOTTsystemFinale;
+
+CREATE TABLE Account (
+	AccID VARCHAR(10) NOT NULL CONSTRAINT PK_Account PRIMARY KEY(AccID),
+	UserName varchar (20),
+	Password varchar (20),
+	TraineeID VARCHAR(10) NOT NULL
+);
+
+CREATE TABLE Trainee (
+	TraineeID VARCHAR(10) NOT NULL CONSTRAINT PK_TRAINEE PRIMARY KEY(TraineeID),
+	FName char(15),
+	LName char(15),
+	TDOB DATE,
+	TAddress varchar(50),
+	AccID VARCHAR(10) NOT NULL,
+	PID VARCHAR(10) NOT NULL
+);
+
+CREATE TABLE Trainee_TEmail (
+	TraineeID VARCHAR(10) NOT NULL,
+	TEmail VARCHAR(30),
+	CONSTRAINT PK_Trainee_TEmail PRIMARY KEY(TraineeID,TEmail),
+	CONSTRAINT FK_Trainee_TEmail FOREIGN KEY (TraineeID) REFERENCES Trainee (TraineeID)
+);
+
+CREATE TABLE Trainee_Contact (
+	TraineeID VARCHAR(10) NOT NULL,
+	TMobileNumber VARCHAR(10),
+	CONSTRAINT PK_Trainee_Contact PRIMARY KEY(TraineeID,TMobileNumber),
+	CONSTRAINT FK_Trainee_Contact1 FOREIGN KEY (TraineeID) REFERENCES Trainee (TraineeID)
+);
+
+CREATE TABLE Payment(
+	PID VARCHAR(10) NOT NULL CONSTRAINT PK_Payment PRIMARY KEY(PID),
+	TraineeID VARCHAR(10) NOT NULL,
+	CardType char(10),
+	CVV int,
+	CardNumber Varchar(20),
+	Amount FLOAT(10),
+	CONSTRAINT FK_Payment FOREIGN KEY (TraineeID) REFERENCES Trainee (TraineeID)
+);
+
+CREATE TABLE Admin (
+	AdID VARCHAR(10) NOT NULL CONSTRAINT PK_Admin PRIMARY KEY(AdID),
+	FName char(10),
+	LName char(10),
+);
+
+
+CREATE TABLE Course (
+	CourseID VARCHAR(10) NOT NULL CONSTRAINT PK_Course PRIMARY KEY(CourseID),
+	CourseFee FLOAT(10),
+	CourseName CHAR(50),
+	PID VARCHAR(10) NOT NULL,
+	AdID VARCHAR(10) NOT NULL,
+	CONSTRAINT FK_Course FOREIGN KEY (PID) REFERENCES Payment (PID),
+	CONSTRAINT FK_Course1 FOREIGN KEY (AdID) REFERENCES Admin (AdID)
+);
+
+CREATE TABLE Course_Type (
+	CourseID VARCHAR(10) NOT NULL,
+	CourseType Char(20),
+	CONSTRAINT PK_Course_Type PRIMARY KEY (CourseID,CourseType),
+	CONSTRAINT FK_Course_Type FOREIGN KEY (CourseID) REFERENCES Course(CourseID)
+);
+
+CREATE TABLE Lecturer (
+	LecID VARCHAR(10) NOT NULL CONSTRAINT PK_Lecture PRIMARY KEY(LecID),
+	Fname char(10),
+	Lname char(8),
+	LecAddress varchar(30),
+	AdID VARCHAR(10)
+);
+
+CREATE TABLE Course_Lecturer (
+	CourseID VARCHAR(10) NOT NULL,
+	LecID VARCHAR(10) NOT NULL,
+	CONSTRAINT FK_Course_Lecturer FOREIGN KEY (CourseID) REFERENCES Course(CourseID),
+	CONSTRAINT FK_Course_Lecturer1 FOREIGN KEY (LecID) REFERENCES Lecturer (LecID)
+);
+
+CREATE TABLE Service (
+	SName VARCHAR(10) NOT NULL CONSTRAINT PK_Service PRIMARY KEY (SName),
+	Quiz varchar(20),
+	Webinar varchar(20)
+);
+
+CREATE TABLE Trainee_Service (
+	SName VARCHAR(10) NOT NULL,
+	TraineeID VARCHAR(10) NOT NULL,
+	CONSTRAINT FK_Trainee_Services FOREIGN KEY (SName) REFERENCES Service (SName),
+	CONSTRAINT FK_Trainee_Services1 FOREIGN KEY (TraineeID) REFERENCES Trainee (TraineeID)
+
+);
+
+CREATE TABLE Course_Services (
+	CourseID VARCHAR(10) NOT NULL,
+	SName VARCHAR(10) NOT NULL,
+	CONSTRAINT FK_Course_Services FOREIGN KEY (CourseID) REFERENCES Course (CourseID),
+	CONSTRAINT FK_Course_Services1 FOREIGN KEY (SName) REFERENCES Service (SName)
+);
+
+
+CREATE TABLE Lecturer_Contact (
+	LecID VARCHAR(10) NOT NULL,
+	LecMobileNum VARCHAR(10),
+	CONSTRAINT PK_Lecturer_Contact PRIMARY KEY (LecID,LecMobileNum),
+	CONSTRAINT FK_Lecturer_Contact1 FOREIGN KEY (LecID) REFERENCES Lecturer (LecID)
+);
+
+CREATE TABLE Lecturer_LecEmail (
+	LecID VARCHAR(10) NOT NULL,
+	LecEmail Varchar(30),
+	CONSTRAINT PK_Lecturer_LecEmail PRIMARY KEY (LecID,LecEmail),
+	CONSTRAINT FK_Lecturer_LecEmail1 FOREIGN KEY (LecID) REFERENCES Lecturer (LecID)
+);
+
+
+CREATE TABLE Admin_AdEmail (
+	AdID VARCHAR(10) NOT NULL,
+	AdEmail Varchar(30),
+	CONSTRAINT PK_Admin_AdEmail PRIMARY KEY (AdID,AdEmail),
+	CONSTRAINT FK_Admin_AdEmail1 FOREIGN KEY (AdID) REFERENCES Admin (AdID)
+);
+
+CREATE TABLE Admin_AdNumber (
+	AdID VARCHAR(10) NOT NULL,
+	AdNumber VARCHAR(10),
+	CONSTRAINT PK_Admin_AdNumber PRIMARY KEY (AdID,AdNumber),
+	CONSTRAINT FK_Admin_AdNumber1 FOREIGN KEY (AdID) REFERENCES Admin (AdID)
+);
+
+CREATE TABLE Trainee_Course (
+	TraineeID VARCHAR(10) NOT NULL,
+	CourseID VARCHAR(10) NOT NULL,
+	CONSTRAINT FK_Trainee_Corse FOREIGN KEY (TraineeID) REFERENCES Trainee (TraineeID),
+	CONSTRAINT FK_Trainee_Corse1 FOREIGN KEY (COurseID) REFERENCES Course (CourseID)
+);
+
+
+INSERT INTO Account VALUES	
+		('AID001','Tharindu','Fdo2020','TR2021001'),
+		('AID002','Amali','A@1990','TR2021002'),
+		('AID003','Pathum','PathuHerath','TR2021003'),
+		('AID004','Lakmal','*a15h7#','TR2021004'),
+		('AID005','Lihini','Lihiangel99','TR2021005'),
+		('AID006','Hashini','95*Hashini','TR2021006'),
+		('AID007','Navod','Fnhy%@89','TR2021007'),
+		('AID008','Nayani','Beauty@97','TR2021008'),
+		('AID009','Gayan','Gayaherath1234','TR2021009'),
+		('AID0010','Devinda','Maxdevinda&2021','TR2021010');
+
+INSERT INTO Trainee VALUES
+		('TR2021001','Tharindu','Sudesh','1996-03-17','No.234, Perera Lane, Malabe','AID0001','12781'),
+		('TR2021002','Amali','Dedunu','1998-08-12','3th Miles Post,Trincomalee','AID0002','13786'),
+		('TR2021003','Pathum','Ishan','1999-10-03','33A, 5th Lane,Colpetty Colombo 03','AID0003','02668'),
+		('TR2021004','Lakmal','Fernando','1994-02-21','1 Galle Face, Colombo 2','AID0004','08765'),
+		('TR2021005','Lihini','Fernando','1999-12-02','210, Galle Road, Colombo 03','AID0005','11165'),
+		('TR2021006','Hashini','Gangoda','1990-03-11','196, Colombo Road, Pilimathalawa, Kandy','AID0006','12076'),
+		('TR2021007','Navod','Thilarathne','1996-05-05','No.95, Negombo Road, Kurunegala','AID0007','87643'),
+		('TR2021008','Nayani','Bogoda','1997-01-15','435B, David Avenue, Negambo','AID0008','88753'),
+		('TR2021009','Gayan','Batagoda','1994-11-07','No. 34, Kothalawala, Kaduwela','AID0009','20087'),
+		('TR2021010','Devinda','Perera','1998.02.20','No.02, Peradeni road, Katugastota','AID0010','00987');
+
+INSERT INTO Trainee_TEmail VALUES 
+		('TR2021001', 'tharindu1234@gmail.com'),
+		('TR2021002', 'Amali2020@gmail.com'),
+		('TR2021002', 'Amalidedu@ymail.com'),
+		('TR2021003', 'pathummax@ymail.com'),
+		('TR2021004', 'Lakmalfdo@hotmail.com'),
+		('TR2021004', 'Lakmalfdo98@ymail.com'),
+		('TR2021005', 'fdolihini@gmail.com'),
+		('TR2021006', 'hashinigangoda1@gmail.com'),
+		('TR2021007', 'navodthila123@hotmail.com'),
+		('TR2021007', 'navodnavod1@gmail.com'),
+		('TR2021008', 'angelnayani97@ymail.com'),
+		('TR2021009', 'gayanbat456@hotmail.com'),
+		('TR2021009', 'batagodagayan@gmail.com'),
+		('TR2021009', 'gayyaboy@ymail.com'),
+		('TR2021010', 'devindadela@gmail.com');
+
+INSERT INTO Trainee_Contact VALUES
+		('TR2021001','0772534563'),
+		('TR2021001','0116537896'),
+		('TR2021002','0784642178'),
+		('TR2021003','0772534563'),
+		('TR2021003','0712678934'),
+		('TR2021004','0786542900'),
+		('TR2021004','0772534563'),
+		('TR2021005','0704567890'),
+		('TR2021006','0752234442'),
+		('TR2021007','0786454132'),
+		('TR2021007','0766665789'),
+		('TR2021008','0716575859'),
+		('TR2021008','0373887690'),
+		('TR2021008','0770005432'),
+		('TR2021009','0708877543'),
+		('TR2021010','0116622009');
+
+INSERT INTO Payment VALUES
+        ('12781','TR2021001','BOC','731','1234 4321 5678 8765','10000.00'),
+		('13786','TR2021002','NSB','123','3214 4567 6387 3749','20000.00'),
+		('02668','TR2021003','LLB','523','7829 7399 2748 7492','6000.00'),
+		('08765','TR2021004','HSBC','133','3674 6828 6264 2848','45000.00'),
+		('11165','TR2021005','NSB','893','8640 6374 6384 9283','9500.00'),
+		('12076','TR2021006','LLB','823','9247 6284 6728 7402','35000.00'),
+		('87643','TR2021007','LOLC','983','7823 6824 6724 6824','9000.00'),
+		('88753','TR2021008','BOC','273','8924 7824 8246 8244','5500.00'),
+		('20087','TR2021009','BOC','813','8242 8924 7294 7294','65000.00'),
+		('00987','TR2021010','LOLC','963','9274 7284 7824 9274','75000.00');
+
+INSERT INTO Admin VALUES
+		('AD001L1','Rumindi','Kumari'),
+		('AD011L2','Hashen','Pilipana'),
+		('AD031L6','Kanchana','Anuradhi'),
+		('AD012L8','Amal','Perera'),
+		('AD561L5','Manula','Adhikari');
+
+INSERT INTO Course VALUES
+		('15677','50000','Machine Learning','12781','AD001L1'),
+		('25644','15000','Introduction to Cloud Computing','13786','AD001L1'),
+		('89514','60000','Google Cloud Data Engineering','02668','AD011L2'),
+		('17652','10000','Covid-19 Contact Tracing','08765','AD011L2'),
+		('78514','20000','Michigan Programming for Everybody','11165','AD031L6'),
+		('78224','25000','MCS Data Science','12076','AD031L6'),
+		('78965','15000','Business Management','87643','AD012L8'),
+		('45187','10000','MS Computer Science','88753','AD012L8'),
+		('95874','15000','Japanese for Beginners','20087','AD561L5'),
+		('52767','10000','Instructional Design Certificate','00987','AD561L5');
+
+INSERT INTO Course_Type VALUES
+		('15677','Diploma'),
+		('25644','Diploma'),
+		('89514','HND'),
+		('17652','Diploma'),
+		('78514','HND'),
+		('78224','Degree'),
+		('78965','Degree'),
+		('45187','Degree'),
+		('95874','Course'),
+		('52767','Course');
+
+
+INSERT INTO Lecturer VALUES
+		('L00234','Supun','Perera','No.156, Gaalle road, Colombo 6','AD001L1'),
+		('L00555','Dilshan','Alwis','334A, Library Road, Kottawa','AD011L2'),
+		('L00894','Aklanka','Silva','2nd Lane,Liberty Avenue,Malabe','AD031L6'),
+		('L00200','Lakshika','Madhushi','23A, Katugastota, Kandy','AD012L8'),
+		('L00134','Piyumi','Botheju','NO56, Ganesh Lane, Trincomalee','AD001L1'),
+		('L00556','Adheesha','Fernando','Peace Lane,Kadawatha','AD561L5'),
+		('L00177','Shenu','Andrew','76b, Midland Road, Homagama','AD561L5');
+
+INSERT INTO Course_Lecturer Values
+		('15677','L00234'),
+		('25644','L00555'),
+		('89514','L00894'),
+		('17652','L00894'),
+		('78514','L00200'),
+		('78224','L00134'),
+		('78965','L00556'),
+		('45187','L00556'),
+		('95874','L00134'),
+		('52767','L00555');
+
+INSERT INTO Service VALUES
+		('ML','ML1','Webinar_ML'),
+		('ICC','ICC1','Webinar_ICC'),
+		('GCDE','GCDE1','Webinar_GCDE'),
+		('CCT','CCT1','Webinar_CCT'),
+		('MPE','MPE1','Webinar_MPE'),
+		('DS','DS1','Webinar_DS'),
+		('BS','BS1','Webinar_BS'),
+		('CS','CS1','Webinar_CS'),
+		('JB','JB1','Webinar_JB'),
+		('IDC','IDC1','Webinar_IDCI');
+
+INSERT INTO Trainee_Service VALUES
+		('ML','TR2021001'),
+		('ML','TR2021002'),
+		('ICC','TR2021005'),
+		('ICC','TR2021002'),
+		('ICC','TR2021003'),
+		('ML','TR2021004'),
+		('ICC','TR2021004'),
+		('GCDE','TR2021010'),
+		('GCDE','TR2021008'),
+		('CCT','TR2021007'),
+		('MPE','TR2021002'),
+		('DS','TR2021008'),
+		('BS','TR2021005'),
+		('CS','TR2021007'),
+		('CS','TR2021006'),
+		('JB','TR2021009'),
+		('JB','TR2021001'),
+		('IDC','TR2021007'),
+		('IDC','TR2021008');
+
+INSERT INTO Course_Services VALUES
+		('15677','ML'),
+		('15677','ICC'),
+		('25644','ICC'),
+		('89514','GCDE'),
+		('89514','ML'),
+		('89514','CCT'),
+		('17652','CCT'),
+		('17652','ML'),
+		('78514','MPE'),
+		('78514','DS'),
+		('78514','BS'),
+		('78224','DS'),
+		('78965','BS'),
+		('45187','CS'),
+		('95874','JB'),
+		('95874','DS'),
+		('52767','IDC');
+
+INSERT INTO Lecturer_Contact VALUES
+		('L00234','037542678'),
+		('L00234','077123567'),
+		('L00555','077543267'),
+		('L00555','011345689'),
+		('L00894','011564378'),
+		('L00894','071356783'),
+		('L00200','011467846'),
+		('L00200','078904324'),
+		('L00134','037654189'),
+		('L00556','078635343'),
+		('L00556','773452123'),
+		('L00177','075148765');
+
+INSERT INTO Lecturer_LecEmail VALUES
+		('L00234','bjhbdj@gmail.com'),
+		('L00234','jjdurhrn@ymail.com'),
+		('L00555','yyfnfjio@hotmail.com'),
+		('L00555','djhbdhjbsdjb@gmail.com'),
+		('L00894','abc1134@ymail.com'),
+		('L00894','2020gdhyrh@ymail.com'),
+		('L00200','userabcj456@hotmail.com'),
+		('L00200','mymail45@gmail.com'),
+		('L00134','adme1234@gmail.com'),
+		('L00556','goodmorning12@gmail.com'),
+		('L00556','Cricketfan@hotmail.com'),
+		('L00177','youcantseeme@ymail.com');
+
+
+INSERT INTO Admin_AdEmail VALUES
+		('AD001L1','BARALRUMI@gmail.com'),
+		('AD011L2','KUMARI1999@gmail.com'),
+		('AD031L6','hashen1999@gmail.com'),
+		('AD012L8','amal1999@gmail.com'),
+		('AD561L5','manula1998@gmail.com');
+
+
+INSERT INTO Admin_AdNumber VALUES
+		('AD001L1','0773635343'),
+		('AD001L1','0756784648'),
+		('AD011L2','0786654423'),
+		('AD011L2','0117645488'),
+		('AD011L2','0757776890'),
+		('AD031L6','0714353637'),
+		('AD012L8','0773534435'),
+		('AD012L8','0756677383'),
+		('AD561L5','0376537838'),
+		('AD561L5','0771234567');
+
+INSERT INTO Trainee_Course VALUES
+		('TR2021001','15677'),
+		('TR2021002','25644'),
+		('TR2021003','89514'),
+		('TR2021004','17652'),
+		('TR2021005','78514'),
+		('TR2021006','78224'),
+		('TR2021007','78965'),
+		('TR2021008','45187'),
+		('TR2021009','95874'),
+		('TR2021010','52767');
+
+
+
+
+		
